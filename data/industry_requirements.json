@@ -1,0 +1,423 @@
+{
+    "roles": {
+        "Backend Developer": {
+            "description": "Develops server-side logic, APIs, and database integrations",
+            "required_skills": {
+                "must_have": [
+                    "Python",
+                    "REST API",
+                    "PostgreSQL",
+                    "Git",
+                    "Linux"
+                ],
+                "nice_to_have": [
+                    "Docker",
+                    "Redis",
+                    "CI/CD",
+                    "AWS",
+                    "GraphQL"
+                ],
+                "soft_skills": [
+                    "Problem Solving",
+                    "Teamwork",
+                    "Communication"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "Python",
+                        "REST API",
+                        "SQL",
+                        "Git"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Docker",
+                        "CI/CD",
+                        "System Design",
+                        "Testing"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Mentoring",
+                        "Cloud",
+                        "Performance Optimization"
+                    ]
+                }
+            }
+        },
+        "Frontend Developer": {
+            "description": "Builds user interfaces and client-side applications",
+            "required_skills": {
+                "must_have": [
+                    "JavaScript",
+                    "HTML",
+                    "CSS",
+                    "React",
+                    "Git"
+                ],
+                "nice_to_have": [
+                    "TypeScript",
+                    "Next.js",
+                    "Testing",
+                    "Figma",
+                    "Redux"
+                ],
+                "soft_skills": [
+                    "Creativity",
+                    "Communication",
+                    "Attention to Detail"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "React"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "TypeScript",
+                        "Testing",
+                        "Performance",
+                        "State Management"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Design Systems",
+                        "Mentoring",
+                        "Accessibility"
+                    ]
+                }
+            }
+        },
+        "Full Stack Developer": {
+            "description": "Works on both frontend and backend of web applications",
+            "required_skills": {
+                "must_have": [
+                    "JavaScript",
+                    "React",
+                    "Node.js",
+                    "SQL",
+                    "Git"
+                ],
+                "nice_to_have": [
+                    "TypeScript",
+                    "Docker",
+                    "AWS",
+                    "MongoDB",
+                    "CI/CD"
+                ],
+                "soft_skills": [
+                    "Problem Solving",
+                    "Adaptability",
+                    "Communication"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "HTML",
+                        "CSS",
+                        "JavaScript",
+                        "React",
+                        "Node.js"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "TypeScript",
+                        "Docker",
+                        "Testing",
+                        "Database Design"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "System Design",
+                        "Cloud Architecture",
+                        "DevOps",
+                        "Mentoring"
+                    ]
+                }
+            }
+        },
+        "Data Scientist": {
+            "description": "Analyzes data and builds predictive models",
+            "required_skills": {
+                "must_have": [
+                    "Python",
+                    "Pandas",
+                    "Scikit-learn",
+                    "SQL",
+                    "Statistical Analysis"
+                ],
+                "nice_to_have": [
+                    "TensorFlow",
+                    "PyTorch",
+                    "Apache Spark",
+                    "Tableau",
+                    "R"
+                ],
+                "soft_skills": [
+                    "Critical Thinking",
+                    "Communication",
+                    "Presentation Skills"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "Python",
+                        "Pandas",
+                        "SQL",
+                        "Data Visualization"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Machine Learning",
+                        "Feature Engineering",
+                        "A/B Testing",
+                        "Deep Learning"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "MLOps",
+                        "Research",
+                        "Architecture",
+                        "Mentoring"
+                    ]
+                }
+            }
+        },
+        "AI/ML Engineer": {
+            "description": "Builds and deploys machine learning models and AI systems",
+            "required_skills": {
+                "must_have": [
+                    "Python",
+                    "Machine Learning",
+                    "Deep Learning",
+                    "TensorFlow",
+                    "Git"
+                ],
+                "nice_to_have": [
+                    "LangChain",
+                    "NLP",
+                    "Computer Vision",
+                    "MLOps",
+                    "Docker"
+                ],
+                "soft_skills": [
+                    "Problem Solving",
+                    "Research",
+                    "Communication"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "Python",
+                        "Machine Learning",
+                        "Pandas",
+                        "Scikit-learn"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Deep Learning",
+                        "NLP",
+                        "Model Deployment",
+                        "Cloud"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Research",
+                        "LLM Development",
+                        "Team Leadership"
+                    ]
+                }
+            }
+        },
+        "DevOps Engineer": {
+            "description": "Manages infrastructure, CI/CD, and deployment pipelines",
+            "required_skills": {
+                "must_have": [
+                    "Linux",
+                    "Docker",
+                    "CI/CD",
+                    "AWS",
+                    "Git"
+                ],
+                "nice_to_have": [
+                    "Kubernetes",
+                    "Terraform",
+                    "Ansible",
+                    "Monitoring",
+                    "Python"
+                ],
+                "soft_skills": [
+                    "Problem Solving",
+                    "Communication",
+                    "Time Management"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "Linux",
+                        "Docker",
+                        "Git",
+                        "CI/CD"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Kubernetes",
+                        "Terraform",
+                        "Cloud",
+                        "Monitoring"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Security",
+                        "Cost Optimization",
+                        "Mentoring"
+                    ]
+                }
+            }
+        },
+        "Mobile Developer": {
+            "description": "Develops mobile applications for iOS and Android",
+            "required_skills": {
+                "must_have": [
+                    "React Native",
+                    "JavaScript",
+                    "Git",
+                    "REST API"
+                ],
+                "nice_to_have": [
+                    "TypeScript",
+                    "Swift",
+                    "Kotlin",
+                    "Flutter",
+                    "Firebase"
+                ],
+                "soft_skills": [
+                    "Creativity",
+                    "Problem Solving",
+                    "Communication"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "React Native",
+                        "JavaScript",
+                        "Mobile UI"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Native Development",
+                        "Performance",
+                        "Testing"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Both Platforms",
+                        "Mentoring"
+                    ]
+                }
+            }
+        },
+        "Cybersecurity Analyst": {
+            "description": "Protects systems and networks from security threats",
+            "required_skills": {
+                "must_have": [
+                    "Network Security",
+                    "Linux",
+                    "OWASP",
+                    "Cybersecurity",
+                    "Python"
+                ],
+                "nice_to_have": [
+                    "Penetration Testing",
+                    "SIEM",
+                    "Encryption",
+                    "Cloud Security",
+                    "Forensics"
+                ],
+                "soft_skills": [
+                    "Critical Thinking",
+                    "Problem Solving",
+                    "Communication"
+                ]
+            },
+            "experience_levels": {
+                "junior": {
+                    "years": "0-2",
+                    "key_skills": [
+                        "Network Security",
+                        "Linux",
+                        "Security Tools"
+                    ]
+                },
+                "mid": {
+                    "years": "2-5",
+                    "key_skills": [
+                        "Penetration Testing",
+                        "Incident Response",
+                        "SIEM"
+                    ]
+                },
+                "senior": {
+                    "years": "5+",
+                    "key_skills": [
+                        "Architecture",
+                        "Risk Assessment",
+                        "Compliance",
+                        "Team Leadership"
+                    ]
+                }
+            }
+        }
+    }
+}

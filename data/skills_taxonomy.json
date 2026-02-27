@@ -1,0 +1,62 @@
+{
+  "categories": {
+    "technical": {
+      "programming_languages": [
+        "Python", "JavaScript", "TypeScript", "Java", "C#", "C++", "Go", "Rust",
+        "Ruby", "PHP", "Swift", "Kotlin", "Scala", "R", "MATLAB", "Dart"
+      ],
+      "web_frontend": [
+        "HTML", "CSS", "React", "Angular", "Vue.js", "Next.js", "Svelte",
+        "Tailwind CSS", "Bootstrap", "SASS", "jQuery", "Redux", "Webpack"
+      ],
+      "web_backend": [
+        "Node.js", "Express.js", "Django", "Flask", "FastAPI", "Spring Boot",
+        "ASP.NET", "Ruby on Rails", "Laravel", "NestJS", "GraphQL", "REST API"
+      ],
+      "databases": [
+        "PostgreSQL", "MySQL", "MongoDB", "Redis", "SQLite", "Oracle",
+        "Cassandra", "DynamoDB", "Firebase", "Supabase", "Elasticsearch"
+      ],
+      "data_science": [
+        "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Keras",
+        "Matplotlib", "Seaborn", "Jupyter", "Apache Spark", "Hadoop",
+        "Data Visualization", "Statistical Analysis", "Feature Engineering"
+      ],
+      "ai_ml": [
+        "Machine Learning", "Deep Learning", "NLP", "Computer Vision",
+        "LangChain", "LangGraph", "OpenAI API", "Hugging Face", "RAG",
+        "Prompt Engineering", "Fine-tuning", "MLOps", "LLM Development"
+      ],
+      "devops_cloud": [
+        "Docker", "Kubernetes", "AWS", "Azure", "GCP", "CI/CD",
+        "Terraform", "Ansible", "Jenkins", "GitHub Actions", "Linux",
+        "Nginx", "Apache", "Monitoring", "Logging"
+      ],
+      "mobile": [
+        "React Native", "Flutter", "Swift", "Kotlin", "iOS Development",
+        "Android Development", "Xamarin", "Ionic"
+      ],
+      "security": [
+        "Cybersecurity", "Penetration Testing", "OWASP", "Encryption",
+        "OAuth", "JWT", "SSL/TLS", "Network Security", "SIEM"
+      ]
+    },
+    "soft": [
+      "Communication", "Teamwork", "Leadership", "Problem Solving",
+      "Critical Thinking", "Time Management", "Adaptability", "Creativity",
+      "Presentation Skills", "Conflict Resolution", "Mentoring",
+      "Project Management", "Agile", "Scrum", "Kanban",
+      "Negotiation", "Decision Making", "Emotional Intelligence"
+    ],
+    "language": [
+      "English", "Turkish", "German", "French", "Spanish", "Chinese",
+      "Japanese", "Korean", "Arabic", "Russian", "Portuguese", "Italian"
+    ],
+    "tool": [
+      "Git", "GitHub", "GitLab", "Bitbucket", "VS Code", "IntelliJ IDEA",
+      "Postman", "Figma", "Jira", "Confluence", "Slack", "Notion",
+      "Trello", "Microsoft Office", "Google Workspace", "Tableau",
+      "Power BI", "Adobe Creative Suite", "AutoCAD", "MATLAB"
+    ]
+  }
+}

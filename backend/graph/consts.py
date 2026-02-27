@@ -1,0 +1,7 @@
+ANALYZE = "analyze"
+EXTRACT = "extract"
+GENERATE = "generate"
+MATCH = "match"
+PARSE = "parse"
+RESEARCH = "research"
+REVIEW = "review"

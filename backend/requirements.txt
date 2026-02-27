@@ -1,0 +1,33 @@
+# LangChain Core
+langchain
+langchain-core
+langchain-community
+
+# LangGraph
+langgraph
+
+# LLM Providers
+langchain-openai
+langchain-google-genai
+langchain-tavily
+
+# Web Framework
+fastapi
+uvicorn
+python-multipart
+
+# Document Parsing
+pymupdf
+python-docx
+
+# Web Scraping
+scrapling
+beautifulsoup4
+requests
+
+# Database
+supabase
+
+# Utilities
+python-dotenv
+pydantic
