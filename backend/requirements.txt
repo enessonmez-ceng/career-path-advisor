@@ -19,6 +19,7 @@ python-multipart
 # Document Parsing
 pymupdf
 python-docx
+pypdf
 
 # Web Scraping
 scrapling
