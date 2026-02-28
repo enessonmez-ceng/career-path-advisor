@@ -4,7 +4,7 @@ Scores and ranks opportunities against a user profile using LLM evaluation.
 """
 from typing import List
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 
@@ -28,7 +28,7 @@ class MatchResult(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 # Create the prompt template
 MATCHER_PROMPT = ChatPromptTemplate.from_messages([

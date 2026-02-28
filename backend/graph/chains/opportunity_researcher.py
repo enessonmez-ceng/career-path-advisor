@@ -5,7 +5,7 @@ Supports: Database lookup, Tavily search, or scraping fallback
 """
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_tavily import TavilySearch
 
@@ -46,7 +46,7 @@ class OpportunityMatcher(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 # Initialize Tavily search
 tavily_search = TavilySearch(max_results=5)

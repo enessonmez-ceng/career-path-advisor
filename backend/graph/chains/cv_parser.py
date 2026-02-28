@@ -4,7 +4,7 @@ Extracts structured information from CV/Resume documents
 """
 from typing import Dict, Any, List, Optional
 from pydantic import Field, BaseModel
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 from graph.utils.document_loader import get_document_content
@@ -44,7 +44,7 @@ class ParsedCV(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 # Create the prompt template
 CV_PARSER_PROMPT = ChatPromptTemplate.from_messages([

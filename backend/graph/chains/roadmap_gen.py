@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Union
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 
 
 class Course(BaseModel):
@@ -40,7 +40,7 @@ ROADMAP_GENERATOR_PROMPT = ChatPromptTemplate.from_messages([
     """)
 ])
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 roadmap_generator_chain = ROADMAP_GENERATOR_PROMPT | llm.with_structured_output(RoadMap)
 

@@ -4,7 +4,7 @@ Categorizes and enriches raw skills extracted from CV with detailed information
 """
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 from graph.state import SkillLevel
@@ -26,7 +26,7 @@ class SkillExtractionResult(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 # Create the prompt template
 SKILL_EXTRACTOR_PROMPT = ChatPromptTemplate.from_messages([

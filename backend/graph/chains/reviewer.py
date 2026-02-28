@@ -5,7 +5,7 @@ Reviews the generated roadmap and recommendations for quality and completeness.
 """
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 
@@ -37,7 +37,7 @@ class RevisedReport(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 
 # Critique Prompt - First pass of reflection

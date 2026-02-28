@@ -4,7 +4,7 @@ Analyzes skill gaps between current skills and target role requirements
 """
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 
@@ -27,7 +27,7 @@ class GapAnalysisResult(BaseModel):
 
 
 # Initialize LLM
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
 # Create the prompt template
 GAP_ANALYZER_PROMPT = ChatPromptTemplate.from_messages([
