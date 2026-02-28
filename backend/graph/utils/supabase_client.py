@@ -1,6 +1,6 @@
 """
 Supabase Client Utility
-Handles all Supabase operations: upsert, query, and maintenance.
+Handles all Supabase operations: upsert, query, semantic search, and maintenance.
 """
 import os
 from typing import List, Optional
@@ -10,6 +10,23 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Lazy import to avoid circular deps
+_embedding_service = None
+
+def _get_embedding_service():
+    """Lazy-load embedding service."""
+    global _embedding_service
+    if _embedding_service is None:
+        from graph.utils.embedding_service import (
+            generate_opportunity_embedding,
+            generate_opportunity_text,
+        )
+        _embedding_service = {
+            "embed": generate_opportunity_embedding,
+            "text": generate_opportunity_text,
+        }
+    return _embedding_service
 
 _client: Optional[Client] = None
 
@@ -104,6 +121,15 @@ def upsert_opportunities(items: List[dict]) -> int:
             "is_active": True,
             "scraped_at": datetime.now(timezone.utc).isoformat(),
         }
+
+        # 2b. Generate embedding vector
+        try:
+            svc = _get_embedding_service()
+            embedding = svc["embed"](item)
+            if embedding:
+                opp_row["embedding"] = embedding
+        except Exception as e:
+            print(f"Embedding error for '{item.get('title', '')}': {e}")
 
         try:
             # Upsert opportunity to get opportunity_id
@@ -253,3 +279,90 @@ def get_stats() -> dict:
         stats["by_source"][s] = stats["by_source"].get(s, 0) + 1
 
     return stats
+
+
+# ═══════════════════════════════════════════════════════════
+# SEMANTIC SEARCH (pgvector)
+# ═══════════════════════════════════════════════════════════
+
+def semantic_search(
+    query_embedding: List[float],
+    match_count: int = 20,
+    match_threshold: float = 0.3,
+    opp_type: Optional[str] = None,
+) -> List[dict]:
+    """
+    Find the most similar opportunities to a query embedding using pgvector.
+
+    Args:
+        query_embedding: 1536-dimensional embedding vector.
+        match_count: Max results to return.
+        match_threshold: Minimum cosine similarity (0.0-1.0).
+        opp_type: Optional filter by type ("internship", "course", etc.).
+
+    Returns:
+        List of opportunity dicts sorted by similarity (highest first).
+    """
+    client = get_supabase_client()
+
+    # Call the SQL function we created in Supabase
+    result = client.rpc(
+        "match_opportunities",
+        {
+            "query_embedding": query_embedding,
+            "match_threshold": match_threshold,
+            "match_count": match_count,
+        },
+    ).execute()
+
+    if not result.data:
+        return []
+
+    opportunities = []
+    for row in result.data:
+        # Optionally filter by type
+        if opp_type and row.get("type") != opp_type:
+            continue
+
+        # Fetch provider name
+        provider_name = ""
+        pid = row.get("provider_id")
+        if pid:
+            try:
+                pr = client.table("providers").select("name").eq("id", pid).execute()
+                if pr.data:
+                    provider_name = pr.data[0].get("name", "")
+            except Exception:
+                pass
+
+        # Fetch skills
+        skills = []
+        oid = row.get("id")
+        if oid:
+            try:
+                sk = client.table("opportunity_skills").select(
+                    "skills(name)"
+                ).eq("opportunity_id", oid).execute()
+                for s in (sk.data or []):
+                    skill_data = s.get("skills")
+                    if isinstance(skill_data, dict) and skill_data.get("name"):
+                        skills.append(skill_data["name"])
+            except Exception:
+                pass
+
+        similarity = row.get("similarity", 0.0)
+
+        opportunities.append({
+            "type": row.get("type", "job"),
+            "title": row.get("title", ""),
+            "provider": provider_name,
+            "url": row.get("url", ""),
+            "description": row.get("description", ""),
+            "required_skills": skills,
+            "match_score": round(similarity, 3),
+            "reason": f"Semantic match ({similarity:.0%} similarity)",
+            "location": row.get("location", ""),
+            "posted_date": row.get("posted_date", ""),
+        })
+
+    return opportunities

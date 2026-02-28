@@ -214,9 +214,10 @@ def research_opportunities(
     Main function to research all types of opportunities.
     
     Priority:
-        1. Supabase database (primary — pre-scraped data)
-        2. Tavily search (secondary — real-time web search)
-        3. LLM suggestions (fill remaining gaps)
+        1. Semantic search via pgvector (primary — embedding similarity)
+        2. Keyword DB fallback (if semantic search fails/empty)
+        3. Tavily search (secondary — real-time web search)
+        4. LLM suggestions (fill remaining gaps)
     
     Args:
         current_skills: User's current skills
@@ -236,45 +237,57 @@ def research_opportunities(
         "certifications": []
     }
     
-    # Build search keywords from skills + role
-    search_keywords = list(set(
-        (current_skills or []) + (skill_gaps or []) + [target_role]
-    ))
-    
-    # ─── 1. PRIMARY: Query Supabase database ───
+    # ─── 1. PRIMARY: Semantic Search via pgvector ───
     if use_database:
         try:
-            from graph.utils.supabase_client import query_opportunities
+            from graph.utils.embedding_service import generate_profile_embedding
+            from graph.utils.supabase_client import semantic_search, query_opportunities
             
-            # Query each category
-            db_internships = query_opportunities(
-                opp_type="internship", keywords=search_keywords, limit=15
+            # Build user profile embedding
+            education_field = ""  # Could be extracted from state if available
+            profile_embedding = generate_profile_embedding(
+                skills=current_skills or [],
+                target_role=target_role,
+                education_field=education_field,
+                skill_gaps=skill_gaps or [],
             )
-            db_jobs = query_opportunities(
-                opp_type="job", keywords=search_keywords, limit=10
-            )
-            all_opportunities["internships"].extend(db_internships + db_jobs)
             
-            db_courses = query_opportunities(
-                opp_type="course", keywords=search_keywords, limit=15
-            )
-            all_opportunities["courses"].extend(db_courses)
-            
-            db_events = query_opportunities(
-                opp_type="event", keywords=search_keywords, limit=10
-            )
-            all_opportunities["events"].extend(db_events)
-            
-            db_certs = query_opportunities(
-                opp_type="certification", keywords=search_keywords, limit=10
-            )
-            all_opportunities["certifications"].extend(db_certs)
-            
-            db_total = sum(len(v) for v in all_opportunities.values())
-            print(f"[DB] Found {db_total} opportunities from Supabase")
-            
+            if profile_embedding:
+                # Semantic search for each category
+                all_db_results = semantic_search(
+                    query_embedding=profile_embedding,
+                    match_count=50,
+                    match_threshold=0.25,
+                )
+                
+                # Categorize results
+                for opp in all_db_results:
+                    opp_type = opp.get("type", "job")
+                    if opp_type in ("internship", "job"):
+                        all_opportunities["internships"].append(opp)
+                    elif opp_type == "course":
+                        all_opportunities["courses"].append(opp)
+                    elif opp_type == "event":
+                        all_opportunities["events"].append(opp)
+                    elif opp_type == "certification":
+                        all_opportunities["certifications"].append(opp)
+                
+                db_total = sum(len(v) for v in all_opportunities.values())
+                print(f"[Semantic] Found {db_total} opportunities via pgvector")
+            else:
+                print("[Semantic] Could not generate profile embedding, falling back to keyword search")
+                # Fallback to keyword search
+                search_keywords = list(set(
+                    (current_skills or []) + (skill_gaps or []) + [target_role]
+                ))
+                db_internships = query_opportunities(opp_type="internship", keywords=search_keywords, limit=15)
+                db_jobs = query_opportunities(opp_type="job", keywords=search_keywords, limit=10)
+                all_opportunities["internships"].extend(db_internships + db_jobs)
+                db_courses = query_opportunities(opp_type="course", keywords=search_keywords, limit=15)
+                all_opportunities["courses"].extend(db_courses)
+                
         except Exception as e:
-            print(f"[DB] Supabase query error (falling back to Tavily): {e}")
+            print(f"[Semantic] Search error (falling back to Tavily): {e}")
     
     # Check if DB provided enough data
     db_sufficient = all(
@@ -283,7 +296,7 @@ def research_opportunities(
     )
     
     if db_sufficient:
-        print(f"[Fast] Supabase has enough data — skipping Tavily & LLM calls")
+        print(f"[Fast] Semantic search has enough data — skipping Tavily & LLM calls")
     else:
         # ─── 2. SECONDARY: Tavily search (only if DB has few results) ───
         if use_tavily:
