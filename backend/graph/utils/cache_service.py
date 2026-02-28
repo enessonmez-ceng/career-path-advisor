@@ -82,16 +82,50 @@ class InMemoryCache:
         raw = json.dumps({"args": args, "kwargs": kwargs}, sort_keys=True, default=str)
         return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
-    def get(self, key: str) -> Optional[Any]:
-        """Cache'den değer al. Süresi dolmuşsa None döner."""
+    def get(self, key: str, original_args: tuple = None, fuzzy_threshold: float = 0.95) -> Optional[Any]:
+        """
+        Cache'den değer al. Süresi dolmuşsa None döner.
+        Eğer key doğrudan bulunamazsa ve original_args (özellikle string ise) verilmişse,
+        eski metinlerle fuzzy_threshold (%95) üzerinde benzerlik arar.
+        """
+        # 1. Exact Match (O(1) hızında)
         entry = self._store.get(key)
+        
+        # 2. Fuzzy Match (O(N) hızında) - sadece metin bazlı inputlar için
+        if entry is None and original_args is not None:
+            # args içindeki ilk büyük string'i (örn. CV metni veya Prompt) bul
+            search_text = next((arg for arg in original_args if isinstance(arg, str) and len(arg) > 20), None)
+            
+            if search_text:
+                try:
+                    from rapidfuzz import fuzz
+                    # Dictionary modifier hatası almamak için itemleri list'e al
+                    for stored_key, stored_data in list(self._store.items()):
+                        stored_args = stored_data.get("original_args", [])
+                        stored_text = next((arg for arg in stored_args if isinstance(arg, str) and len(arg) > 20), None)
+                        
+                        if stored_text:
+                            # Örn: %95 benzerlik varsa aynı CV Kabul et
+                            similarity = fuzz.ratio(search_text, stored_text) / 100.0
+                            if similarity >= fuzzy_threshold:
+                                entry = stored_data
+                                # İleride hızlı bulmak için bu varyasyonu da kaydet
+                                self._store[key] = entry
+                                self._stats["hits"] += 1
+                                self._stats["fuzzy_hits"] = self._stats.get("fuzzy_hits", 0) + 1
+                                return entry["value"]
+                except ImportError:
+                    pass # Rapidfuzz yoksa fuzzy match yapma
+
         if entry is None:
             self._stats["misses"] += 1
             return None
 
         # TTL kontrolü
         if time.time() - entry["timestamp"] > self._ttl:
-            del self._store[key]
+            # Süresi dolmuşsa orijinal keyi veya bulduğumuz keyi sil
+            if key in self._store:
+                del self._store[key]
             self._stats["misses"] += 1
             self._stats["evictions"] += 1
             return None
@@ -99,7 +133,7 @@ class InMemoryCache:
         self._stats["hits"] += 1
         return entry["value"]
 
-    def set(self, key: str, value: Any) -> None:
+    def set(self, key: str, value: Any, original_args: tuple = None) -> None:
         """Cache'e değer yaz."""
         # Max size kontrolü (LRU benzeri — en eski girişi sil)
         if len(self._store) >= self._max_size:
@@ -110,6 +144,7 @@ class InMemoryCache:
         self._store[key] = {
             "value": value,
             "timestamp": time.time(),
+            "original_args": original_args or []
         }
 
     def clear(self) -> None:
@@ -123,6 +158,7 @@ class InMemoryCache:
 
         return {
             "hits": self._stats["hits"],
+            "fuzzy_hits": self._stats.get("fuzzy_hits", 0),
             "misses": self._stats["misses"],
             "evictions": self._stats["evictions"],
             "hit_rate": round(hit_rate, 2),
@@ -164,14 +200,14 @@ def cached(cache_instance: InMemoryCache):
         def wrapper(*args, **kwargs):
             key = cache_instance._make_key(func.__name__, *args, **kwargs)
             
-            # Cache'de var mı?
-            cached_result = cache_instance.get(key)
+            # Cache'de var mı? (Fuzzy arama da dahil)
+            cached_result = cache_instance.get(key, original_args=args)
             if cached_result is not None:
                 return cached_result
             
             # Yoksa fonksiyonu çağır ve cache'le
             result = func(*args, **kwargs)
-            cache_instance.set(key, result)
+            cache_instance.set(key, result, original_args=args)
             return result
         
         return wrapper
