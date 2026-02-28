@@ -108,8 +108,8 @@ async def analyze_cv(
             "iteration": 0,
         }
         
-        # Run the career advisor graph
-        result = career_advisor_graph.invoke(initial_state)
+        # Run the career advisor graph asynchronously
+        result = await career_advisor_graph.ainvoke(initial_state)
         
         # Build response (serialize SkillLevel enums to strings)
         def serialize_skills(skills):
