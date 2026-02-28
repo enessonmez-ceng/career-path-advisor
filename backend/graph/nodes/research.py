@@ -6,7 +6,7 @@ from graph.state import CareerState
 from graph.chains.opportunity_researcher import research_opportunities
 
 
-def research_node(state: CareerState) -> dict:
+async def research_node(state: CareerState) -> dict:
     """
     Research opportunities based on user skills and identified gaps.
     

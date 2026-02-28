@@ -5,15 +5,12 @@ Defines the main StateGraph connecting all nodes in the pipeline.
 from langgraph.graph import StateGraph, END
 
 from graph.state import CareerState
-from graph.consts import PARSE, EXTRACT, ANALYZE, RESEARCH, MATCH, GENERATE, REVIEW
+from graph.consts import PARSE, EXTRACT, ANALYZE, RESEARCH, MATCH
 from graph.nodes.parse import parse_node
 from graph.nodes.extract import extract_node
 from graph.nodes.analyze import analyze_node
 from graph.nodes.research import research_node
 from graph.nodes.match import match_node
-from graph.nodes.generate import generate_node
-from graph.nodes.review import review_node, should_continue_review
-
 
 def build_graph(enable_review: bool = False) -> StateGraph:
     """
@@ -34,13 +31,12 @@ def build_graph(enable_review: bool = False) -> StateGraph:
     """
     workflow = StateGraph(CareerState)
 
-    # Add core nodes
+    # Add core nodes (generate removed)
     workflow.add_node(PARSE, parse_node)
     workflow.add_node(EXTRACT, extract_node)
     workflow.add_node(ANALYZE, analyze_node)
     workflow.add_node(RESEARCH, research_node)
     workflow.add_node(MATCH, match_node)
-    workflow.add_node(GENERATE, generate_node)
 
     # Set entry point
     workflow.set_entry_point(PARSE)
@@ -50,23 +46,9 @@ def build_graph(enable_review: bool = False) -> StateGraph:
     workflow.add_edge(EXTRACT, ANALYZE)
     workflow.add_edge(ANALYZE, RESEARCH)
     workflow.add_edge(RESEARCH, MATCH)
-    workflow.add_edge(MATCH, GENERATE)
-
-    if enable_review:
-        # Full pipeline with reflection loop
-        workflow.add_node(REVIEW, review_node)
-        workflow.add_edge(GENERATE, REVIEW)
-        workflow.add_conditional_edges(
-            REVIEW,
-            should_continue_review,
-            {
-                "generate": GENERATE,
-                "end": END,
-            },
-        )
-    else:
-        # Fast mode: skip review, go straight to END
-        workflow.add_edge(GENERATE, END)
+    
+    # End workflow after match
+    workflow.add_edge(MATCH, END)
 
     return workflow
 

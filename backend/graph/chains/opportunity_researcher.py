@@ -296,59 +296,11 @@ def research_opportunities(
     )
     
     if db_sufficient:
-        print(f"[Fast] Semantic search has enough data — skipping Tavily & LLM calls")
-    else:
-        # ─── 2. SECONDARY: Tavily search (only if DB has few results) ───
-        if use_tavily:
-            needs_internships = len(all_opportunities["internships"]) < 3
-            needs_courses = len(all_opportunities["courses"]) < 3
-            needs_events = len(all_opportunities["events"]) < 3
-            
-            if needs_internships:
-                internship_query = f"{target_role} internship {location} 2025"
-                tavily_internships = search_with_tavily(internship_query, "internship")
-                all_opportunities["internships"].extend(tavily_internships)
-            
-            if needs_courses and skill_gaps:
-                course_query = f"{skill_gaps[0]} online course tutorial"
-                tavily_courses = search_with_tavily(course_query, "course")
-                all_opportunities["courses"].extend(tavily_courses)
-            
-            if needs_events:
-                event_query = f"tech meetup {location} software developer"
-                tavily_events = search_with_tavily(event_query, "event")
-                all_opportunities["events"].extend(tavily_events)
+        print(f"[Fast] Semantic search has enough data — skipping LLM & Tavily")
+    elif use_tavily:
+        print("[Fast] Not enough data in DB, but LLM & Tavily are disabled for performance.")
         
-        # ─── 3. FILL GAPS: LLM suggestions ───
-        llm_results = search_opportunities_llm(current_skills, target_role, skill_gaps, location)
-        
-        # Merge LLM suggestions (convert Pydantic models to dicts)
-        all_opportunities["internships"].extend([o.model_dump() for o in llm_results.internships])
-        all_opportunities["courses"].extend([o.model_dump() for o in llm_results.courses])
-        all_opportunities["events"].extend([o.model_dump() for o in llm_results.events])
-        all_opportunities["certifications"].extend([o.model_dump() for o in llm_results.certifications])
-        
-        # ─── 4. Match and score (only when we have mixed sources) ───
-        all_flat = (
-            all_opportunities["internships"] + 
-            all_opportunities["courses"] + 
-            all_opportunities["events"] + 
-            all_opportunities["certifications"]
-        )
-        
-        if all_flat:
-            try:
-                matched = match_opportunities(all_flat, current_skills, target_role, skill_gaps)
-                for opp in matched.matched_opportunities:
-                    for category in all_opportunities.values():
-                        for item in category:
-                            if item.get("title") == opp.title:
-                                item["match_score"] = opp.match_score
-                                item["reason"] = opp.reason or item.get("reason", "")
-            except Exception as e:
-                print(f"[Matcher] Scoring error: {e}")
-    
-    # Sort each category by match_score
+    # Sıralama (Eğer skill matcher henüz çalışmadıysa basitçe döndür)
     for category in all_opportunities:
         all_opportunities[category] = sorted(
             all_opportunities[category],

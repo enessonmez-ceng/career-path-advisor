@@ -43,10 +43,6 @@ interface AnalysisResult {
   course_recommendations: Opportunity[];
   event_recommendations: Opportunity[];
   certification_recommendations: Opportunity[];
-  development_roadmap: string;
-  final_report: string;
-  critique: string;
-  iterations: number;
 }
 
 interface Opportunity {
@@ -60,7 +56,7 @@ interface Opportunity {
   reason: string;
 }
 
-type Tab = "skills" | "recommendations" | "roadmap" | "report";
+type Tab = "skills" | "recommendations";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -114,9 +110,6 @@ export default function Home() {
 
   const tabs: { key: Tab; label: string; icon: string }[] = [
     { key: "skills", label: "Skills", icon: "⚡" },
-    { key: "recommendations", label: "Recommendations", icon: "🎯" },
-    { key: "roadmap", label: "Roadmap", icon: "🗺️" },
-    { key: "report", label: "Full Report", icon: "📄" },
   ];
 
   return (
@@ -137,8 +130,7 @@ export default function Home() {
             Career Path Advisor
           </h1>
           <p className="text-lg text-[var(--muted)]">
-            Upload your CV and get AI-powered career recommendations —
-            internships, courses, events, and a personalized development roadmap.
+            internships, courses, and events.
           </p>
         </div>
       </header>
@@ -297,105 +289,7 @@ export default function Home() {
               </div>
             )}
 
-            {activeTab === "roadmap" && (
-              <div className="glass-card p-6">
-                <h3 className="mb-4 text-lg font-semibold gradient-text">
-                  Development Roadmap
-                </h3>
-                <div className="prose prose-invert max-w-none text-sm leading-relaxed text-[var(--foreground)] opacity-90">
-                  {result.development_roadmap.split("\n").map((line, i) => {
-                    if (line.startsWith("###")) {
-                      return (
-                        <h4 key={i} className="mb-2 mt-5 text-base font-semibold text-[var(--primary-light)]">
-                          {line.replace(/^###\s*/, "")}
-                        </h4>
-                      );
-                    }
-                    if (line.startsWith("##")) {
-                      return (
-                        <h3 key={i} className="mb-3 mt-6 text-lg font-bold gradient-text">
-                          {line.replace(/^##\s*/, "")}
-                        </h3>
-                      );
-                    }
-                    if (line.startsWith("- **")) {
-                      const [label, ...rest] = line.replace(/^- \*\*/, "").split("**");
-                      return (
-                        <p key={i} className="mb-1 ml-4">
-                          <strong className="text-[var(--accent)]">{label}</strong>
-                          {rest.join("**")}
-                        </p>
-                      );
-                    }
-                    if (line.trim() === "") return <br key={i} />;
-                    return <p key={i} className="mb-1">{line}</p>;
-                  })}
-                </div>
-              </div>
-            )}
 
-            {activeTab === "report" && (
-              <div className="glass-card p-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold gradient-text">
-                    Full Career Report
-                  </h3>
-                  <span className="text-xs text-[var(--muted)]">
-                    {result.iterations} review iteration(s)
-                  </span>
-                </div>
-                <div className="prose prose-invert max-w-none text-sm leading-relaxed text-[var(--foreground)] opacity-90">
-                  {result.final_report.split("\n").map((line, i) => {
-                    if (line.startsWith("# ")) {
-                      return (
-                        <h2 key={i} className="mb-3 mt-6 text-xl font-bold text-[var(--foreground)]">
-                          {line.replace(/^#\s*/, "")}
-                        </h2>
-                      );
-                    }
-                    if (line.startsWith("## ")) {
-                      return (
-                        <h3 key={i} className="mb-2 mt-5 text-lg font-semibold gradient-text">
-                          {line.replace(/^##\s*/, "")}
-                        </h3>
-                      );
-                    }
-                    if (line.startsWith("### ")) {
-                      return (
-                        <h4 key={i} className="mb-2 mt-4 text-base font-semibold text-[var(--primary-light)]">
-                          {line.replace(/^###\s*/, "")}
-                        </h4>
-                      );
-                    }
-                    if (line.startsWith("- **")) {
-                      const [label, ...rest] = line.replace(/^- \*\*/, "").split("**");
-                      return (
-                        <p key={i} className="mb-1 ml-4">
-                          <strong className="text-[var(--accent)]">{label}</strong>
-                          {rest.join("**")}
-                        </p>
-                      );
-                    }
-                    if (line.startsWith("- ")) {
-                      return (
-                        <p key={i} className="mb-1 ml-4 text-[var(--foreground)]">
-                          • {line.replace(/^- /, "")}
-                        </p>
-                      );
-                    }
-                    if (line.startsWith("**")) {
-                      return (
-                        <p key={i} className="mb-2 font-semibold text-[var(--foreground)]">
-                          {line.replace(/\*\*/g, "")}
-                        </p>
-                      );
-                    }
-                    if (line.trim() === "" || line.trim() === "---") return <br key={i} />;
-                    return <p key={i} className="mb-1">{line}</p>;
-                  })}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Skill Gaps */}

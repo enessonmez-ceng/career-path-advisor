@@ -3,10 +3,10 @@ Match Node
 Re-scores and ranks all opportunities against the user profile.
 """
 from graph.state import CareerState
-from graph.chains.matcher import match_and_rank
 
 
-def match_node(state: CareerState) -> dict:
+
+async def match_node(state: CareerState) -> dict:
     """
     Match and rank all gathered opportunities against the user profile.
     
@@ -35,22 +35,23 @@ def match_node(state: CareerState) -> dict:
     if not all_opportunities:
         return {}
     
-    # Run the matcher
-    match_result = match_and_rank(
+    # Run the custom hybrid matcher (0 API cost, explainable)
+    from graph.utils.skill_matcher import rank_opportunities
+    
+    scored_opps = rank_opportunities(
+        user_skills=skill_names,
         opportunities=all_opportunities,
-        current_skills=skill_names,
-        target_role=target_role,
-        skill_gaps=gap_names,
-        strengths=strengths,
+        user_text=" ".join(strengths) if strengths else "",
     )
     
     # Build a lookup from matched results
     score_lookup = {}
-    for matched in match_result.matched_opportunities:
-        score_lookup[matched.title] = {
-            "match_score": matched.match_score,
-            "reason": matched.reason,
-        }
+    for opp in scored_opps:
+        score_lookup[opp["title"]] = {
+            "match_score": opp["match_score"],
+            "reason": opp["match_explanation"],
+        }    
+
     
     # Update scores in each category
     def update_scores(recommendations: list) -> list:
