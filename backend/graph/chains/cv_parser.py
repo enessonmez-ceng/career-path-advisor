@@ -24,7 +24,7 @@ class Education(BaseModel):
     degree: str = Field(description="Degree type (e.g., 'Bachelor's', 'Master's')")
     field: str = Field(description="Field of study")
     institution: str = Field(description="School or university name")
-    year: Optional[int] = Field(default=None, description="Graduation year")
+    year: Optional[str] = Field(default=None, description="Graduation year or expected date (e.g., '2024', 'Expected: June 2027')")
 
 
 class ParsedCV(BaseModel):
