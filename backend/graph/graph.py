@@ -1,6 +1,12 @@
 """
 Career Path Advisor - LangGraph Workflow
 Defines the main StateGraph connecting all nodes in the pipeline.
+
+Flow (parallel mode):
+    parse -> extract -> [analyze, research] (parallel) -> match -> END
+
+    After extract, analyze (LLM) and research (DB) run simultaneously.
+    Match node waits for both to complete before executing.
 """
 from langgraph.graph import StateGraph, END
 
@@ -12,26 +18,18 @@ from graph.nodes.analyze import analyze_node
 from graph.nodes.research import research_node
 from graph.nodes.match import match_node
 
-def build_graph(enable_review: bool = False) -> StateGraph:
+
+def build_graph() -> StateGraph:
     """
     Build the Career Path Advisor workflow graph.
 
-    Args:
-        enable_review: If True, includes the review/reflection loop.
-                       Default False for faster results (~15s vs ~35s).
-
-    Flow (fast mode):
-        parse -> extract -> analyze -> research -> match -> generate -> END
-
-    Flow (review mode):
-        parse -> extract -> analyze -> research -> match -> generate -> review
-                                                                        |
-                                                     (needs revision) -> generate
-                                                     (done)           -> END
+    Uses fan-out / fan-in pattern:
+      - extract fans out to [analyze, research] (parallel)
+      - match fans in (waits for both to complete)
     """
     workflow = StateGraph(CareerState)
 
-    # Add core nodes (generate removed)
+    # Add all nodes
     workflow.add_node(PARSE, parse_node)
     workflow.add_node(EXTRACT, extract_node)
     workflow.add_node(ANALYZE, analyze_node)
@@ -41,17 +39,22 @@ def build_graph(enable_review: bool = False) -> StateGraph:
     # Set entry point
     workflow.set_entry_point(PARSE)
 
-    # Add sequential edges
+    # Sequential: parse -> extract
     workflow.add_edge(PARSE, EXTRACT)
+
+    # Fan-out: extract -> [analyze, research] (parallel execution)
     workflow.add_edge(EXTRACT, ANALYZE)
-    workflow.add_edge(ANALYZE, RESEARCH)
+    workflow.add_edge(EXTRACT, RESEARCH)
+
+    # Fan-in: [analyze, research] -> match (waits for both)
+    workflow.add_edge(ANALYZE, MATCH)
     workflow.add_edge(RESEARCH, MATCH)
-    
-    # End workflow after match
+
+    # End
     workflow.add_edge(MATCH, END)
 
     return workflow
 
 
-# Compile the graph for use (fast mode by default)
-career_advisor_graph = build_graph(enable_review=False).compile()
+# Compile the graph
+career_advisor_graph = build_graph().compile()
