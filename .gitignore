@@ -44,3 +44,9 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Dev/test artifacts
+backend/llm_benchmark.py
+backend/.pytest_cache/
+CAREER-PATH-ADVISOR-ROADMAP.md
+LANGGRAPH_DOCS.md
