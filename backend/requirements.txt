@@ -26,8 +26,8 @@ scrapling
 beautifulsoup4
 requests
 
-# Database
-supabase
+# Vector Database
+chromadb
 
 # Utilities
 python-dotenv

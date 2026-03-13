@@ -15,7 +15,7 @@ class EnrichedSkill(BaseModel):
     name: str = Field(description="Skill name")
     category: str = Field(description="Category: 'technical', 'soft', 'language', or 'tool'")
     level: str = Field(description="Proficiency level: 'beginner', 'intermediate', 'advanced', or 'expert'")
-    years_experience: Optional[float] = Field(default=None, description="Estimated years of experience with this skill")
+    years_experience: Optional[float] = Field(None, description="Estimated years of experience with this skill. Use 0 or omit if unknown.")
 
 
 class SkillExtractionResult(BaseModel):
@@ -105,12 +105,16 @@ def convert_to_state_skills(extraction_result: SkillExtractionResult) -> List[di
             "advanced": SkillLevel.ADVANCED,
             "expert": SkillLevel.EXPERT
         }
+        level_str = getattr(skill, "level", "beginner") or "beginner"
+        level = level_map.get(level_str.lower(), SkillLevel.BEGINNER)
+        
+        yoe = getattr(skill, "years_experience", None)
         
         state_skills.append({
-            "name": skill.name,
-            "category": skill.category,
-            "level": level_map.get(skill.level.lower(), SkillLevel.BEGINNER),
-            "years_experience": skill.years_experience
+            "name": getattr(skill, "name", "Unknown"),
+            "category": getattr(skill, "category", "technical"),
+            "level": level,
+            "years_experience": yoe
         })
     
     return state_skills

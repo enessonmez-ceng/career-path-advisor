@@ -225,7 +225,7 @@ def research_opportunities(
         skill_gaps: Skills to develop
         location: Preferred location
         use_tavily: Whether to use Tavily for real-time search
-        use_database: Whether to query Supabase database
+        use_database: Whether to query ChromaDB database
         
     Returns:
         Dict with categorized opportunities
@@ -241,7 +241,7 @@ def research_opportunities(
     if use_database:
         try:
             from graph.utils.embedding_service import generate_profile_embedding
-            from graph.utils.supabase_client import semantic_search, query_opportunities
+            from graph.utils.chromadb_client import semantic_search, query_opportunities
             
             # Build user profile embedding
             education_field = ""  # Could be extracted from state if available

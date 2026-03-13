@@ -4,7 +4,7 @@ Generates vector embeddings using OpenAI's text-embedding-3-small model.
 Used for:
   1. Encoding opportunity (title + description + skills) → vector
   2. Encoding user profile (skills + target_role + education) → vector
-  3. Enabling cosine similarity search in Supabase pgvector
+  3. Enabling cosine similarity search in ChromaDB
 """
 import os
 from typing import List, Optional

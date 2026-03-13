@@ -50,3 +50,10 @@ backend/llm_benchmark.py
 backend/.pytest_cache/
 CAREER-PATH-ADVISOR-ROADMAP.md
 LANGGRAPH_DOCS.md
+
+# Data seeding files
+companies/
+jobs/
+mappings/
+*.csv
+backend/test_upload.py

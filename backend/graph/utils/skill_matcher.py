@@ -133,7 +133,15 @@ def weighted_match_score(
         Dict with score, matched_skills, missing_skills, details
     """
     if not job_skills:
-        return {"score": 0.0, "matched": [], "missing": [], "details": "No job skills"}
+        return {
+            "score": 0.0, 
+            "matched_skills": [], 
+            "missing_skills": [], 
+            "coverage_pct": 0.0,
+            "total_required": 0,
+            "total_matched": 0,
+            "details": "No job skills"
+        }
 
     if skill_categories is None:
         skill_categories = {}

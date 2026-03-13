@@ -110,6 +110,7 @@ export default function Home() {
 
   const tabs: { key: Tab; label: string; icon: string }[] = [
     { key: "skills", label: "Skills", icon: "⚡" },
+    { key: "recommendations", label: "Recommendations", icon: "🎯" },
   ];
 
   return (
@@ -264,7 +265,7 @@ export default function Home() {
               <div className="space-y-6">
                 <RecommendationCard
                   opportunities={result.internship_recommendations}
-                  title="Internships"
+                  title="Suggested Jobs"
                   icon="💼"
                   accentColor="#6366f1"
                 />
